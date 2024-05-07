@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiple Graphs with Data Input</title>
+</head>
+<style>
+  .flexing{
+    display: flex;
+    justify-content: center;
+  }
+</style>
+<body>
+<div class="flexing">
+  <div style="width: 400px; height: 400px; margin-bottom: 20px;">
+    <canvas id="barChart"></canvas>
+  </div>
+
+  <div style="width: 400px; height: 400px; margin-bottom: 20px;">
+    <canvas id="lineChart"></canvas>
+  </div>
+
+  <div style="width: 400px; height: 400px;">
+    <canvas id="pieChart"></canvas>
+  </div>
+</div>
+<input type="number" id="dataInput" placeholder="Enter value">
+<button id="addDataBtn">Add Data</button>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  function createChart(canvasId, chartType, labels, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+      type: chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Data',
+          data: data,
+          backgroundColor: chartType === 'pie' ? undefined : [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+          ],
+          borderColor: chartType === 'pie' ? undefined : [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+          ],
+          borderWidth: chartType === 'pie' ? undefined : 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  let barLabels = ['Filip', 'Matej', 'Mira',"cernoch"];
+  let barData = [5, 10, 20];
+
+  let barChart = createChart('barChart', 'bar', barLabels, barData);
+  function addData(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data.push(data);
+    });
+    chart.update();
+  }
+
+  document.getElementById('addDataBtn').addEventListener('click', function() {
+    const input = document.getElementById('dataInput');
+    const value = parseInt(input.value);
+    if (!isNaN(value)) {
+      addData(barChart, `Column ${barData.length + 1}`, value);
+    }
+  });
+</script>
+</body>
+</html>
